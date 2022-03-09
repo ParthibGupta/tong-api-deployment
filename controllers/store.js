@@ -1,0 +1,48 @@
+const Store = require('../models/Store');
+const Product = require('../models/Product')
+var ObjectId = require('mongodb').ObjectId;
+
+
+exports.get_store_everything = async (req, res) => {
+    const id = req.body.storeId;
+
+    if (ObjectId.isValid(id)) {
+        const store = await Store.findById(id);
+        const products = await Product.find({storeId: id});
+
+        // res.setHeader('Content-Type', 'application/json');
+        res.status(200).json({ store: { ...store._doc, products: products } });
+    } else {
+        res.status(400).json({ message: 'Not a valid store id'});
+    }
+}
+
+exports.get_store_products = async (req, res) => {
+    const id = req.body.store_id;
+    const products = await Product.find({shop: id});
+
+    // res.setHeader('Content-Type', 'application/json');
+    res.status(200).json({products: products});
+}
+
+exports.update_store = async (req, res) => {
+    const { updates, storeId } = req.body;
+    if(req.user.storeId == storeId){
+        try {
+            await Store.updateOne(
+                {_id: storeId},
+                {$set: updates}
+            );
+
+            const updatedStore = await Store.findById(storeId);
+            consolelog(updatedStore)
+
+            res.json({ message: "processed", store: updatedStore });
+        } catch(error) {
+            res.status(500).json(error);
+        }
+    }
+    else {
+        res.json({message: "You are not authorized to update this store"})
+    }
+}
