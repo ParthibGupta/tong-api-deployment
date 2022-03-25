@@ -12,10 +12,6 @@ const store_schema = new mongoose.Schema({
         required: true, 
         max: 6
     },
-    products : {
-        type: [mongoose.Schema.Types.ObjectId],
-        required: true
-    },
     description: {
         type: String, 
         required: true,
@@ -47,7 +43,10 @@ const store_schema = new mongoose.Schema({
         type: [String],
         required: true
     },
-
+    coverPhoto: {
+        type: String,
+        required: true
+    },
     returnPolicy: {
         type: String,
         required: true
@@ -61,10 +60,10 @@ const store_schema = new mongoose.Schema({
         type: String,
         required: true
     },
-    coverPhoto: {
-        type: String,
-        required: true
-    },
+    // coverPhoto: {
+    //     type: String,
+    //     required: true
+    // },
     creator :{
         type: mongoose.Schema.Types.ObjectId,
         required: true

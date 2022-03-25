@@ -3,7 +3,9 @@ const Product = require('../models/Product')
 
 exports.create_product = async (req, res) => {
 
-    const store = await Store.findOne({_id: req.body.store});
+    const { storeId, productData } = req.body 
+
+    const store = await Store.findOne({_id: storeId });
 
     if(!store){
         res.json({message: "Store doesn't exist"});
@@ -14,38 +16,33 @@ exports.create_product = async (req, res) => {
         res.json({message: "Owner mismatch"});
         return;
     }
-    const product = new Product({
-        name: req.body.name,
-        store: req.body.store,
-        description: req.body.description,
-        price: req.body.price,
-        created_at: req.body.created_at,
-        images: req.body.images,
-        categoryIds: req.body.categoryIds,
-        isActive: req.body.isActive,
-        hasVariations: req.body.hasVariations,
-        discounts: req.body.discounts,
 
+    const product = new Product({
+        name: productData.name,
+        sku: productData.sku,
+        storeId: storeId,
+        description: productData.description,
+        price: productData.price,
+        images: productData.images,
+        categories: productData.categories,
+        isActive: productData.isActive,
+        hasVariations: productData.hasVariations,
+        discounts: [],
+        stockCount: productData.stockCount,
+        stockCountOption: productData.stockCountOption,
+        priceOption: productData.priceOption,
+        variations: productData.variations,
+        options: productData.options
     });
 
     product.save()
     .then(data => {
         // res.status(200).json(data);
-        const store = req.body.store;
-        const product_id = data._id;
-        Store.updateOne(
-            {"_id": store},
-            {"$push": {products: product_id} }
-        )
-        .then(() => {
-            res.json(data);
-        })
-        .catch(error => {
-            res.status(500).json(error);
-        })   
+        res.status(200).json({ proudct: data });  
     })
     .catch(error => {
-        res.status(500).json(error);
+        console.log(error.message)
+        res.status(500).json({ message: error.message});
     })   
 
 }
@@ -68,18 +65,16 @@ exports.update_product_by_id = async (req, res) => {
         res.json({message: "Product not found"});
         return;
     }
-    const store = await Store.findOne({_id: product.store});
-
     //Check if req is coming from store owner
-    if(store.creator.equals(req.user._id)){
-        const changes = req.body.changes;
+    if(product.storeId == req.user.storeId){
+        const updates = req.body.updates;
 
         Product.updateOne(
             {_id: id},
-            {$set: changes}
+            {$set: updates}
         )
         .then((data) =>{
-            res.json({message: "processed", data});
+            res.json({message: "Product has been updated successfully", data});
         })
         .catch((error) => {
             res.status(500).json(error);

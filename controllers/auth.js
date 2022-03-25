@@ -88,14 +88,19 @@ exports.register_and_create_store = async (req, res) => {
         try {
             const product = new Product({
                 name: storeData.product.productName,
+                sku: '',
                 description: storeData.product.productDescription,
                 price: Number(storeData.product.productPrice),
                 images: [storeData.product.productPicture],
-                categoryIds: ['Uncategorized'],
+                categories: [],
+                stockCount: 0,
+                stockCountOption: 'none',
+                priceOption: 'product',
                 isActive: true,
                 hasVariations: false,
                 discounts: [],
-                variations: []
+                variations: [],
+                options: []
             });
 
             // After registering user, create the store
@@ -113,7 +118,6 @@ exports.register_and_create_store = async (req, res) => {
                 returnPolicy: storeData.returnPolicy,
                 displayPhoto: storeData.displayPhoto,
                 coverPhoto: storeData.coverPhoto,
-                products: []
             });
 
             // Link product to store and save
@@ -121,7 +125,7 @@ exports.register_and_create_store = async (req, res) => {
             await product.save();
 
             // Link store to product and save
-            store.products.push(product._id);
+            // store.products.push(product._id);
             const saved_store = await store.save();
 
             // Assign store id to owner user
@@ -131,6 +135,6 @@ exports.register_and_create_store = async (req, res) => {
             const token = jwt.sign({_id: saved_user._id}, process.env.TOKEN_SECRET);
             return res.status(200).json({message: "Successfully registered", token, user: saved_user });
         } catch(err) {
-            return res.status(400).json({message: err});
+            return res.status(400).json({message: err.message });
         }
 }

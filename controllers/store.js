@@ -1,5 +1,6 @@
 const Store = require('../models/Store');
-const Product = require('../models/Product')
+const Product = require('../models/Product');
+const Category = require('../models/Category');
 var ObjectId = require('mongodb').ObjectId;
 
 
@@ -9,9 +10,11 @@ exports.get_store_everything = async (req, res) => {
     if (ObjectId.isValid(id)) {
         const store = await Store.findById(id);
         const products = await Product.find({storeId: id});
+        const categories = await Category.find({storeId: id});
 
+        // console.log({ store: { ...store._doc, products: products } })
         // res.setHeader('Content-Type', 'application/json');
-        res.status(200).json({ store: { ...store._doc, products: products } });
+        res.status(200).json({ store: { ...store._doc, products: products, categories: categories } });
     } else {
         res.status(400).json({ message: 'Not a valid store id'});
     }
