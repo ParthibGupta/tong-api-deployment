@@ -37,7 +37,16 @@ const store_schema = new mongoose.Schema({
         type: [String],
         required: true
     },
-
+    paymentMethods: {
+        type: {
+            bkash: {
+                number: String,
+                enabled: Boolean
+            },
+            cashOnDelivery: Boolean
+        },
+        required: true
+    },
     //[phone, whatsapp, viber]
     contacts: {
         type: [String],

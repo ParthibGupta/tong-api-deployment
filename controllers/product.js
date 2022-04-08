@@ -74,7 +74,7 @@ exports.update_product_by_id = async (req, res) => {
             {$set: updates}
         )
         .then((data) =>{
-            res.json({message: "Product has been updated successfully", data});
+            res.json({message: "Product has been updated successfully", product: data});
         })
         .catch((error) => {
             res.status(500).json(error);
@@ -86,32 +86,24 @@ exports.update_product_by_id = async (req, res) => {
     
 }
 
-exports.delete_product_by_id = async (req, res) => {
-    const id = req.body.product_id;
-    const product = await Product.findOne({_id: id});
+exports.delete_product = async (req, res) => { 
+    const { productId, storeId } = req.body
+    const store = await Store.findById({_id: storeId });
 
-    //Product Validation
-    if(!product){
-        res.json({message: "Product not found"});
+    if(!store){
+        res.json({message: "Store doesn't exist"});
         return;
     }
-    const store = await Store.findOne({_id: product.store});
-
-    //Check if req is coming from store owner
-    if(store.creator.equals(req.user._id)){
-
-        Product.deleteOne(
-            {_id: id}
-        )
-        .then((data) =>{
-            res.send({message: "processed", data});
-        })
-        .catch((error) => {
-            res.status(500).json(error);
-        })
-    }
-    else{
-        res.json({message: "Owner mismatch"})
-    }
     
+    if(!store.creator.equals(req.user._id)){
+        res.json({message: "Owner mismatch"});
+        return;
+    }
+
+    try {
+        await Product.findByIdAndDelete(productId)
+        res.status(200).json({ message:`Product ${productId} has been deleted`});
+    } catch(error) {
+        res.status(500).json(error);
+    }
 }

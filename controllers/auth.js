@@ -118,6 +118,13 @@ exports.register_and_create_store = async (req, res) => {
                 returnPolicy: storeData.returnPolicy,
                 displayPhoto: storeData.displayPhoto,
                 coverPhoto: storeData.coverPhoto,
+                paymentMethods: {
+                    bkash: { 
+                        number: storeData.bkashNumber,
+                        enabled: storeData.bkashEnabled
+                    },
+                    cashOnDelivery: storeData.cashOnDelivery
+                }
             });
 
             // Link product to store and save

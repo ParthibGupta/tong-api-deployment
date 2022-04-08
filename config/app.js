@@ -6,6 +6,7 @@ const product_router = require('../routers/product');
 const auth_router    = require('../routers/auth');
 const user_router    = require('../routers/user');
 const category_router    = require('../routers/category');
+const order_router   = require('../routers/order');
 const cors           = require('cors');
 
 require('dotenv/config');
@@ -25,6 +26,7 @@ mongoose.connect(process.env.NODE_ENV !== "test" ? process.env.DB_MAIN_CONNECTIO
 app.use('/stores', store_router);
 app.use('/categories', category_router);
 app.use('/products', product_router);
+app.use('/orders', order_router);
 app.use('/auth', auth_router);
 app.use('/users', user_router);
 
