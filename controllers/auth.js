@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const Store = require('../models/Store');
+const Order = require('../models/Order');
+const Review = require('../models/Review');
 const Product = require('../models/Product');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -21,12 +23,13 @@ exports.login_user = async (req, res) => {
     
     //Logging in
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
-
+    const orders = await Order.find({ userId: user._id });
+    const reviews = await Review.find({ user: user._id });
 
     return res.status(200).json({
         message: "Logged in successfully",
         token,
-        user
+        user: { ...user._doc, orders, reviews }
     });
 
 }
@@ -92,7 +95,7 @@ exports.register_and_create_store = async (req, res) => {
                 description: storeData.product.productDescription,
                 price: Number(storeData.product.productPrice),
                 images: [storeData.product.productPicture],
-                categories: [],
+                category: '',
                 stockCount: 0,
                 stockCountOption: 'none',
                 priceOption: 'product',
@@ -113,7 +116,28 @@ exports.register_and_create_store = async (req, res) => {
                 discounts: [],
                 creator: user._id,
                 socials: storeData.socials,
-                contracts: storeData.contracts,
+                contacts: {
+                    messenger: {
+                        enabled: false,
+                        link: ''
+                    },
+                    telegram: {
+                        enabled: false,
+                        link: ''
+                    },
+                    whatsapp: {
+                        enabled: false,
+                        link: ''
+                    },
+                    viber: {
+                        enabled: false,
+                        link: ''
+                    },
+                    phone: {
+                        enabled: false,
+                        link: ''
+                    }
+                },
                 address: storeData.address,
                 returnPolicy: storeData.returnPolicy,
                 displayPhoto: storeData.displayPhoto,

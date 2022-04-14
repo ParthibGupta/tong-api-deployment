@@ -24,7 +24,7 @@ exports.create_product = async (req, res) => {
         description: productData.description,
         price: productData.price,
         images: productData.images,
-        categories: productData.categories,
+        category: productData.category,
         isActive: productData.isActive,
         hasVariations: productData.hasVariations,
         discounts: [],

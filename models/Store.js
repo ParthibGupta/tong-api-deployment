@@ -49,7 +49,28 @@ const store_schema = new mongoose.Schema({
     },
     //[phone, whatsapp, viber]
     contacts: {
-        type: [String],
+        type: {
+            messenger: {
+                enabled: Boolean,
+                link: String
+            },
+            telegram: {
+                enabled: Boolean,
+                link: String
+            },
+            whatsapp: {
+                enabled: Boolean,
+                link: String
+            },
+            viber: {
+                enabled: Boolean,
+                link: String
+            },
+            phone: {
+                enabled: Boolean,
+                link: String
+            }
+        },
         required: true
     },
     coverPhoto: {

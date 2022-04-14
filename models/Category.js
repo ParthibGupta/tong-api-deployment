@@ -7,7 +7,7 @@ const category_schema = new mongoose.Schema({
         min: 1
     },
     storeId: {
-        type: [mongoose.Schema.Types.ObjectId], 
+        type: mongoose.Schema.Types.ObjectId, 
         default: null
     }
 }, { timestamps: true });

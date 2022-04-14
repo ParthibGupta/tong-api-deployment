@@ -71,9 +71,9 @@ const product_schema = new mongoose.Schema({
         type: [String], 
         default: []
     },
-    categories: {
-        type: [mongoose.Schema.Types.ObjectId], 
-        required: true,
+    category: {
+        type: String, 
+        default: '',
     },
     isActive : {
         type: Boolean,

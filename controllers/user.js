@@ -1,9 +1,13 @@
 const User = require('../models/User');
-
+const Order = require('../models/Order');
+const Review = require('../models/Review');
 
 exports.find_user_by_id = async (req, res) => {
     const user = await User.findById({_id: req.user._id}, { password: 0 })
-    res.json({ user });
+    const orders = await Order.find({ userId: req.user._id });
+    const reviews = await Review.find({ user: req.user._id });
+
+    res.json({ user: { ...user._doc, orders, reviews } });
 }
 
 // exports.update_user_details = async (req, res) => {
